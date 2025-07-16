@@ -137,7 +137,7 @@ OPENAI_API_KEY=sk_...
 
 ## 📸 Screenshots
 
-> 📍 \[Add screenshots in README after running the UI locally. Add a folder `/screenshots` if needed.]
+> 📍 \[Add screenshots in pics folder in repo]
 
 ---
 
