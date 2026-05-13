@@ -13,16 +13,11 @@ langchain-community==0.4.1
 langchain-text-splitters==1.1.2
 langchain-pinecone
 langchain-openai==1.2.1
-langchain-huggingface==1.2.2
-langchain-experimental==0.4.1
 
 # Vector DB
 pinecone==7.3.0
 
-# Embeddings
-sentence-transformers==5.4.1
-
-# PDF parsing
+# PDF parsing (store_index.py only — not needed at runtime)
 pypdf==6.11.0
 
 # Package

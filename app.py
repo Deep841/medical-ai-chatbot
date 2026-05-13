@@ -5,12 +5,11 @@ from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from langchain_pinecone import PineconeVectorStore
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_classic.chains import create_retrieval_chain
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
-from src.helper import download_hugging_face_embeddings
 from src.prompt import system_prompt
 
 load_dotenv()
@@ -45,12 +44,16 @@ limiter = Limiter(
 )
 
 # ── RAG pipeline (initialised once at startup) ─────────────────────────────
-logger.info("Loading embeddings...")
-embeddings = download_hugging_face_embeddings()
+logger.info("Loading embeddings via GitHub Models API...")
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-small",
+    openai_api_key=GITHUB_TOKEN,
+    openai_api_base="https://models.inference.ai.azure.com"
+)
 
 logger.info("Connecting to Pinecone index...")
 docsearch = PineconeVectorStore.from_existing_index(
-    index_name="medicalbot",
+    index_name="medicalbot-v2",
     embedding=embeddings
 )
 retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 3})
