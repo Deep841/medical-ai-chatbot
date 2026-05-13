@@ -1,172 +1,199 @@
-# medical-ai-chatbot
-# 🧠 Medical AI Chatbot
+# 🧠 MediBot — AI Medical Information Assistant
 
-Hi, my name is **Deep** — and welcome to the **Medical AI Chatbot** repository! 🩺
-
-This project is a fully functional end-to-end AI-powered medical chatbot that leverages advanced NLP techniques, semantic search, and large language models (LLMs) to assist users with medical queries using data extracted from authoritative medical sources.
+> A production-ready Retrieval-Augmented Generation (RAG) chatbot that answers medical queries using semantic search over a 2,000+ page medical encyclopedia — with source citations, rate limiting, and a modern glass-morphism UI.
 
 ---
 
-## 📚 Knowledge Base
+## 🚀 Live Demo
 
-We use **The Gale Encyclopedia of Medicine (Second Edition, Volume One)** as our primary medical knowledge base.
+> Run locally: `http://localhost:8080`
 
-* The entire PDF is parsed and processed.
-* Data is embedded using **HuggingFace models**.
-* Stored in a **Pinecone vector database** hosted on the cloud (as the dataset is large, local vector storage is not suitable).
+![MediBot UI](pics/1.png)
+
+---
+
+## 🏗️ Architecture
+
+```
+User Query
+    │
+    ▼
+Flask API (/get)
+    │
+    ├── Input validation (max 500 chars)
+    ├── Rate limiting (20 req/min per IP)
+    │
+    ▼
+HuggingFace Embeddings
+(sentence-transformers/all-MiniLM-L6-v2 → 384-dim)
+    │
+    ▼
+Pinecone Vector DB (semantic similarity search, k=3)
+    │  Returns top-3 relevant chunks + metadata (source, page)
+    ▼
+LangChain RAG Chain
+    │  Stuffs retrieved context into prompt
+    ▼
+GitHub Models API → GPT-4o mini
+    │  Generates grounded answer with medical disclaimer
+    ▼
+JSON Response { answer, sources: ["Medical_book.pdf, p.42", ...] }
+    │
+    ▼
+Frontend (glass-morphism UI, source citation tags)
+```
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Component       | Technology                                    |
-| --------------- | --------------------------------------------- |
-| Vector DB       | Pinecone (cloud-based, semantic vector index) |
-| Embedding Model | `sentence-transformers/all-MiniLM-L6-v2`      |
-| Language Model  | OpenAI GPT / HuggingFace FLAN-T5 (fallback)   |
-| Framework       | LangChain                                     |
-| UI              | Flask + HTML/CSS                              |
-| Deployment      | Localhost (simple deployment)                 |
+| Layer | Technology |
+|-------|-----------|
+| LLM | GPT-4o mini via GitHub Models API |
+| Embeddings | `sentence-transformers/all-MiniLM-L6-v2` (384-dim) |
+| Vector DB | Pinecone (serverless, AWS us-east-1) |
+| RAG Framework | LangChain |
+| Backend | Flask + Gunicorn |
+| Rate Limiting | Flask-Limiter |
+| Frontend | Vanilla JS + CSS (glass-morphism, DM Sans) |
+| Containerisation | Docker + docker-compose |
 
 ---
 
-## 📦 Folder Structure
+## ✨ Key Features
 
-```bash
-medical-ai-chatbot/
-├── app.py                  # Flask app
-├── src/                    # Source code
-│   ├── helper.py           # Utility functions
-│   └── constants.py        # All static values
-├── templates/chat.html     # HTML UI
-├── static/style.css        # Styling
-├── research/               # Notebook and step-by-step experimentation
-├── requirements.txt        # Dependencies
-└── store_index.py          # Script to create and store Pinecone index
-```
+- **Source citations** — every answer shows `📄 Medical_book.pdf, p.42` so users know exactly where the information came from
+- **Medical disclaimer** — hardcoded in both the system prompt and UI — cannot be bypassed
+- **Rate limiting** — 20 requests/min per IP, 200/day — prevents abuse
+- **Input validation** — empty messages and inputs over 500 chars are rejected with proper HTTP 400
+- **Health check endpoint** — `GET /health` for uptime monitoring and Docker healthchecks
+- **Structured logging** — timestamped logs for every request and error
+- **Production server** — Gunicorn with 2 workers, not Flask dev server
+- **Containerised** — single `docker-compose up` to run
 
 ---
 
-## 🚀 How It Works
+## ⚙️ Setup
 
-### 🔧 Backend
-
-1. **PDF Parsing**: Using `PyPDFLoader` and `DirectoryLoader`, extract medical knowledge from the encyclopedia.
-2. **Text Chunking**: Divide content into meaningful chunks using `RecursiveCharacterTextSplitter`.
-3. **Embeddings**: Generate 384-dim embeddings using HuggingFace models.
-4. **Vector DB**: Store embeddings in Pinecone for fast and scalable semantic search.
-5. **Query Flow**:
-
-   * User query -> converted to embedding
-   * Search vector DB for similar chunks
-   * Feed relevant chunks + query into LLM
-   * Return concise medical answer
-
-### 💬 Frontend
-
-* Flask-powered UI that allows users to ask questions.
-* Responses displayed from either OpenAI or local HuggingFace models (fallback).
-* Styling using static CSS and HTML templates.
-
----
-
-## 💡 Key Features
-
-* 📚 Handles a large-scale PDF medical knowledge base.
-* ☁️ Cloud-based semantic search using Pinecone.
-* 🤖 Supports both OpenAI API and local LLMs.
-* 🧩 Modular code structure (suitable for reuse & expansion).
-* ⚡ Fast and responsive interface.
-
----
-
-## ⚙️ Setup Instructions
+### Local (conda)
 
 ```bash
 git clone https://github.com/Deep841/medical-ai-chatbot.git
 cd medical-ai-chatbot
 
-# Create a virtual environment
 conda create -n medibot python=3.10 -y
 conda activate medibot
 
-# Install dependencies
 pip install -r requirements.txt
 
-# Run backend index creation (one-time)
-python store_index.py
+cp .env.example .env
+# Fill in PINECONE_API_KEY and GITHUB_NEW_API_TOKEN
 
-# Start Flask app
 python app.py
 ```
 
 Visit: `http://localhost:8080`
 
----
-
-## 🔑 Environment Variables (.env)
-
-Make sure to create a `.env` file with:
+### Docker (production)
 
 ```bash
-HUGGINGFACEHUB_API_TOKEN=hf_...
-PINECONE_API_KEY=pc_...
-OPENAI_API_KEY=sk_...
+cp .env.example .env
+# Fill in your keys
+
+docker-compose up --build
+```
+
+### Re-index knowledge base (one-time)
+
+```bash
+# Place PDFs in the Data/ folder, then:
+python store_index.py
 ```
 
 ---
 
-## 🧪 Development Notes
+## 🔑 Environment Variables
 
-* Used `FLAN-T5-Small` as a fallback local LLM when OpenAI API had issues.
-* Integrated `sentence-transformers` carefully due to version mismatches.
-* Created semantic vector index using 384-dim embedding (important for Pinecone compatibility).
-* Notebook experimentation first, then transitioned to modular Python codebase.
-* UI built using a free HTML/CSS template.
-* Successfully tested query answers like: `What is Acromegaly and Gigantism?`
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `PINECONE_API_KEY` | ✅ | Pinecone API key — [app.pinecone.io](https://app.pinecone.io) |
+| `GITHUB_NEW_API_TOKEN` | ✅ | GitHub Models API token — [github.com/marketplace/models](https://github.com/marketplace/models) |
+| `HUGGINGFACEHUB_API_TOKEN` | Optional | Only needed to re-run `store_index.py` |
 
----
-
-## 🤯 Challenges Faced
-
-* Version conflicts with `sentence-transformers`, `transformers`, and `huggingface_hub`.
-* Switched to using HuggingFace LLM due to OpenAI API quota limits.
-* Cloud cost consideration led to mixed OpenAI (API) + local fallback LLM setup.
+> ⚠️ Never commit `.env` to Git. Use `.env.example` as the template.
 
 ---
 
-## 📸 Screenshots
+## 📡 API Reference
 
-> 📍 \[Add screenshots in pics folder in repo]
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Chat UI |
+| `GET` | `/health` | Health check — returns `{"status": "ok"}` |
+| `POST` | `/get` | Send message, get answer + sources |
+
+**POST /get**
+```
+Content-Type: application/x-www-form-urlencoded
+Body: msg=What is acromegaly?
+
+Response:
+{
+  "answer": "Acromegaly is a hormonal disorder...",
+  "sources": ["Data/Medical_book.pdf, p.42"]
+}
+```
 
 ---
 
-## 🧠 Learnings
+## 📁 Project Structure
 
-* Vector databases scale better for large documents.
-* LLM context length and model size matter.
-* Efficient retrieval-augmented generation (RAG) architecture is critical.
-* Open-source alternatives can be used when API keys are limited or quota-bound.
+```
+medical-ai-chatbot/
+├── app.py                  # Flask app — routes, RAG chain, rate limiting
+├── src/
+│   ├── helper.py           # PDF loader, text splitter, embeddings
+│   └── prompt.py           # System prompt with medical disclaimer
+├── template/chat.html      # Frontend UI
+├── static/style.css        # Glass-morphism styles
+├── store_index.py          # One-time Pinecone index creation
+├── requirements.txt        # Pinned dependencies
+├── Dockerfile              # Production container
+├── docker-compose.yml      # One-command deployment
+└── .env.example            # Environment variable template
+```
+
+---
+
+## 🔒 Security
+
+- `.env` is in `.gitignore` — keys never committed
+- Non-root Docker user (`appuser`)
+- Input length capped at 500 characters
+- Rate limiting per IP address
+- No `debug=True` in production
+
+---
+
+## 🧠 How RAG Works (for interviews)
+
+1. At startup, the 2,000+ page medical encyclopedia is chunked into 500-character segments and embedded into 384-dimensional vectors stored in Pinecone
+2. When a user asks a question, the query is embedded using the same model
+3. Pinecone finds the 3 most semantically similar chunks (cosine similarity)
+4. Those chunks + the original question are passed to GPT-4o mini
+5. The LLM generates a grounded answer — it can only use the retrieved context, not hallucinate
+6. The source file and page number are extracted from chunk metadata and returned alongside the answer
 
 ---
 
 ## 📌 Future Enhancements
 
-* Streamlit-based UI
-* Add multilingual medical query support
-* Integration with speech-to-text
-* More robust fallback strategy for LLMs
+- [ ] Swap knowledge base for WHO / Indian govt health guidelines (freely distributable)
+- [ ] Add conversation memory (multi-turn chat)
+- [ ] Deploy to AWS ECS / Render / Railway
+- [ ] Streamlit alternative UI
+- [ ] Multilingual query support
 
 ---
 
-## 🙌 Final Words
-
-Thank you for checking out the **Medical AI Chatbot** project. It's been an incredible journey working through real-world problems, debugging, and learning how modern AI tools can come together to build powerful healthcare solutions. 💙
-
----
-
-> 💬 If you liked the project, give it a ⭐ on GitHub and feel free to fork it!
-
----
-
-*– Made with 💡 by Deep on July 16, 2025*
+*Built by [Deep](https://github.com/Deep841) · July 2025*
