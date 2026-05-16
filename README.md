@@ -105,6 +105,14 @@ cp .env.example .env
 docker-compose up --build
 ```
 
+### Tests
+
+```bash
+pytest
+```
+
+The repository includes GitHub Actions CI at `.github/workflows/ci.yml` to run backend tests and frontend lint/build on every push and pull request to `main`.
+
 ### Re-index knowledge base (one-time)
 
 ```bash

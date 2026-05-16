@@ -15,17 +15,18 @@ load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
+TESTING = os.environ.get("TESTING") == "1"
 
-# ── Validate env vars ──────────────────────────────────────────────────────
+# ── Validate env vars ─────────────────────────────────────────────────────
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
 GITHUB_TOKEN     = os.environ.get("GITHUB_NEW_API_TOKEN")
 
-if not PINECONE_API_KEY:
-    raise RuntimeError("PINECONE_API_KEY is not set.")
-if not GITHUB_TOKEN:
-    raise RuntimeError("GITHUB_NEW_API_TOKEN is not set.")
-
-os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
+if not TESTING:
+    if not PINECONE_API_KEY:
+        raise RuntimeError("PINECONE_API_KEY is not set.")
+    if not GITHUB_TOKEN:
+        raise RuntimeError("GITHUB_NEW_API_TOKEN is not set.")
+    os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
 
 # ── App ────────────────────────────────────────────────────────────────────
 app = Flask(__name__, template_folder="template")
@@ -39,24 +40,40 @@ limiter = Limiter(
 )
 
 # ── RAG setup ──────────────────────────────────────────────────────────────
-logger.info("Initialising embeddings...")
-embeddings = OpenAIEmbeddings(
-    model="text-embedding-3-small",
-    openai_api_key=GITHUB_TOKEN,
-    openai_api_base="https://models.inference.ai.azure.com"
-)
+if TESTING:
+    logger.info("Test mode enabled: using dummy retriever and LLM")
 
-logger.info("Connecting to Pinecone...")
-docsearch = PineconeVectorStore.from_existing_index(
-    index_name="medicalbot-v2", embedding=embeddings
-)
-retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 4})
+    class DummyRetriever:
+        def invoke(self, query):
+            return []
 
-llm = ChatOpenAI(
-    model="gpt-4o-mini", temperature=0.4, max_tokens=600,
-    openai_api_key=GITHUB_TOKEN,
-    openai_api_base="https://models.inference.ai.azure.com"
-)
+    class DummyLLM:
+        def invoke(self, prompt):
+            class DummyResponse:
+                content = "This is a test answer from MediBot."
+            return DummyResponse()
+
+    retriever = DummyRetriever()
+    llm = DummyLLM()
+else:
+    logger.info("Initialising embeddings...")
+    embeddings = OpenAIEmbeddings(
+        model="text-embedding-3-small",
+        openai_api_key=GITHUB_TOKEN,
+        openai_api_base="https://models.inference.ai.azure.com"
+    )
+
+    logger.info("Connecting to Pinecone...")
+    docsearch = PineconeVectorStore.from_existing_index(
+        index_name="medicalbot-v2", embedding=embeddings
+    )
+    retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 4})
+
+    llm = ChatOpenAI(
+        model="gpt-4o-mini", temperature=0.4, max_tokens=600,
+        openai_api_key=GITHUB_TOKEN,
+        openai_api_base="https://models.inference.ai.azure.com"
+    )
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", system_prompt),
