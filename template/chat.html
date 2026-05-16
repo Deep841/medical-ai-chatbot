@@ -19,9 +19,9 @@
   <!-- Navbar -->
   <header class="navbar">
     <div class="navbar-inner">
-      <span class="brand">QuantumLogic Labs</span>
+      <span class="brand">MediBot</span>
       <div class="nav-center">
-        <span class="nav-pill active">MediBot</span>
+        <span class="nav-pill active">Medical AI Chat</span>
       </div>
       <div class="nav-right">
         <span class="badge-pill">🩺 Medical AI</span>
@@ -150,17 +150,33 @@
       msgs.scrollTop = msgs.scrollHeight;
     }
 
+    function formatAnswer(answer) {
+      const paragraphs = answer
+        .trim()
+        .split(/\n{2,}|\n?-\s+|\r\n{2,}/g)
+        .map(segment => segment.trim())
+        .filter(Boolean);
+
+      return paragraphs.map(text => {
+        if (text.match(/^\d+\.|^•|^-\s+/)) {
+          return `<li>${escapeHtml(text.replace(/^\d+\.|^•|^-\s+/, '').trim())}</li>`;
+        }
+        return `<p>${escapeHtml(text)}</p>`;
+      }).join('');
+    }
+
     function appendBotMsg(answer, sources, time) {
       const msgs = document.getElementById('messages');
       const sourcesHtml = sources && sources.length
         ? `<div class="sources-block">📄 <strong>Sources:</strong> ${sources.map(s => `<span class="source-tag">${s}</span>`).join('')}</div>`
         : '';
+      const formattedAnswer = formatAnswer(answer);
       const div = document.createElement('div');
       div.className = 'msg bot-msg';
       div.innerHTML = `
         <div class="msg-avatar">🧠</div>
         <div class="msg-bubble bot-bubble">
-          <p>${escapeHtml(answer)}</p>
+          <div class="answer-content">${formattedAnswer}</div>
           ${sourcesHtml}
           <span class="msg-time">${time}</span>
         </div>`;

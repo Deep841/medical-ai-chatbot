@@ -1,18 +1,29 @@
 export default function Navbar() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-6 pt-3">
-      <div className="max-w-6xl mx-auto glass-navbar rounded-full px-7 py-3.5 flex items-center shadow-sm">
-        <span className="text-[15px] font-bold text-slate-900 tracking-tight">🧠 MediBot</span>
-        <nav className="absolute left-1/2 -translate-x-1/2">
-          <span className="px-4 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase text-slate-900 bg-slate-900/8">
-            MediBot
+    <header className="fixed top-0 left-0 right-0 z-50 glass-navbar px-6 h-14 flex items-center">
+      <div className="max-w-6xl mx-auto w-full flex items-center justify-between">
+
+        {/* Logo */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
+            style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
+            🧠
+          </div>
+          <span className="text-[15px] font-bold text-white tracking-tight">MediBot</span>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/20">
+            AI
           </span>
-        </nav>
-        <div className="ml-auto">
-          <span className="px-3 py-1.5 rounded-full text-[11px] font-semibold text-slate-500 bg-slate-100"
-            style={{ boxShadow: 'inset 0 0 12px rgba(0,0,0,0.09), 0px 0px 1px rgba(0,0,0,0.2)' }}>
-            🩺 Medical AI
-          </span>
+        </div>
+
+        {/* Center status */}
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/8">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-400 glow-green" />
+          <span className="text-[11px] text-slate-400 font-medium">RAG · GPT-4o mini · Pinecone</span>
+        </div>
+
+        {/* Right */}
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] text-slate-500">🩺 Medical AI</span>
         </div>
       </div>
     </header>
