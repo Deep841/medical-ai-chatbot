@@ -127,7 +127,7 @@ python store_index.py
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `PINECONE_API_KEY` | ✅ | Pinecone API key — [app.pinecone.io](https://app.pinecone.io) |
-| `GITHUB_NEW_API_TOKEN` | ✅ | GitHub Models API token — [github.com/marketplace/models](https://github.com/marketplace/models) |
+| `OpenAI` | ✅ |
 | `HUGGINGFACEHUB_API_TOKEN` | Optional | Only needed to re-run `store_index.py` |
 
 > ⚠️ Never commit `.env` to Git. Use `.env.example` as the template.
