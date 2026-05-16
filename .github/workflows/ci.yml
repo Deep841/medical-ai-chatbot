@@ -28,7 +28,7 @@ jobs:
 
       - name: Run backend tests
         run: |
-          pytest
+          python -m pytest tests/ -v
 
   frontend:
     name: Frontend build + lint

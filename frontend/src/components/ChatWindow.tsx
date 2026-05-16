@@ -38,7 +38,11 @@ export default function ChatWindow({ pendingInput, onPendingConsumed }: Props) {
   useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(messages)); }, [messages]);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, loading]);
   useEffect(() => {
-    if (pendingInput) { setInput(pendingInput); onPendingConsumed(); }
+    if (pendingInput) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setInput(pendingInput);
+      onPendingConsumed();
+    }
   }, [pendingInput, onPendingConsumed]);
 
   async function send(text: string) {
