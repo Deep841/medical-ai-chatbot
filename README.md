@@ -10,7 +10,7 @@
 
 > Run locally: `http://localhost:8080`
 
-![MediBot UI](pics/1.png)
+
 
 ---
 
