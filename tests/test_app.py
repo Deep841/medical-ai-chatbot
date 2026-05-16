@@ -37,3 +37,9 @@ def test_medical_query_returns_dummy_answer():
 def test_is_medical_query():
     assert is_medical_query("What is hypertension?")
     assert not is_medical_query("What movies are playing?")
+
+
+def test_twisted_medical_query_is_accepted():
+    assert is_medical_query("What are the side effects of thyroid medication?")
+    assert is_medical_query("Can thyroid issues cause fatigue and hair loss?")
+    assert not is_medical_query("What is the weather forecast for tomorrow?")

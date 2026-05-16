@@ -85,27 +85,68 @@ prompt = ChatPromptTemplate.from_messages([
 # Each session stores last 6 messages (3 turns)
 sessions: dict[str, list] = {}
 
-# ── Medical intent keywords (lightweight classifier) ──────────────────────
+# ── Medical intent classifier (scoring-based) ─────────────────────────────
 MEDICAL_KEYWORDS = {
-    "symptom","disease","condition","treatment","medicine","drug","dose","pain",
+    "symptom","symptoms","disease","condition","treatment","treatments","medicine","drug","dose","pain",
     "fever","infection","cancer","diabetes","heart","blood","surgery","doctor",
     "hospital","diagnosis","therapy","vaccine","virus","bacteria","chronic",
     "acute","syndrome","disorder","injury","wound","allergy","prescription",
     "anatomy","organ","muscle","bone","nerve","skin","lung","kidney","liver",
-    "brain","stomach","headache","headace","head","ache","nausea","vomiting",
+    "brain","stomach","headache","headache","nausea","vomiting",
     "diarrhea","fatigue","cough","rash","swelling","inflammation","hypertension",
     "cholesterol","asthma","arthritis","depression","anxiety","mental","health",
     "medical","clinical","patient","nursing","pharmacy","antibiotic","vitamin",
-    "hormone","what is","how to treat","causes of","signs of","symptoms of",
+    "hormone","thyroid","hypothyroidism","hyperthyroidism","endocrine","gland",
+    "side effect","side effects","adverse effect","adverse effects",
+    "what is","how to treat","causes of","signs of","symptoms of",
     "cure for","tell me about","explain","define","describe","acromegaly",
     "migraine","appendicitis","ibuprofen","paracetamol","aspirin","insulin",
     "blood pressure","heart rate","pulse","temperature","weight","diet",
     "nutrition","exercise","sleep","stress","immune","autoimmune","genetic",
 }
 
+NON_MEDICAL_KEYWORDS = {
+    "movie","music","song","recipe","restaurant","travel","flight","weather",
+    "investment","stocks","bitcoin","crypto","movie","sports","game","programming",
+    "code","computer","phone","fashion","makeup","guitar","lyrics","joke",
+    "funny","birthday","party","meme","holiday","wedding",
+}
+
+MEDICAL_QUESTION_TRIGGERS = {
+    "what","how","why","does","can","is","are","when","where","which",
+}
+
+
 def is_medical_query(text: str) -> bool:
     lower = text.lower()
-    return any(kw in lower for kw in MEDICAL_KEYWORDS)
+    score = 0
+
+    # Strong medical phrases count more than single-word matches.
+    for kw in MEDICAL_KEYWORDS:
+        if kw in lower:
+            score += 2 if " " in kw else 1
+
+    # Non-medical topics should block if they appear strongly.
+    negative_score = 0
+    for kw in NON_MEDICAL_KEYWORDS:
+        if kw in lower:
+            negative_score += 1
+
+    if score >= 3 and negative_score < 2:
+        return True
+
+    if negative_score > 0 and score < 4:
+        return False
+
+    if any(trigger in lower for trigger in MEDICAL_QUESTION_TRIGGERS) and score >= 2:
+        return True
+
+    # Accept explicit medical terms even without classic question wording.
+    medical_terms = {"thyroid", "cancer", "diabetes", "asthma", "hypertension", "virus", "bacteria"}
+    if any(term in lower for term in medical_terms) and score >= 1:
+        return True
+
+    return False
 
 # ── Routes ─────────────────────────────────────────────────────────────────
 @app.route("/")
