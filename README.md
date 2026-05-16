@@ -6,6 +6,8 @@
 
 ## 🚀 Live Demo
 
+> 🌐 Live Demo: **https://medibot-w7u1.onrender.com**
+
 > Run locally: `http://localhost:8080`
 
 ![MediBot UI](pics/1.png)
