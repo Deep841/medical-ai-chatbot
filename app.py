@@ -75,11 +75,15 @@ MEDICAL_KEYWORDS = {
     "hospital","diagnosis","therapy","vaccine","virus","bacteria","chronic",
     "acute","syndrome","disorder","injury","wound","allergy","prescription",
     "anatomy","organ","muscle","bone","nerve","skin","lung","kidney","liver",
-    "brain","stomach","headache","nausea","vomiting","diarrhea","fatigue",
-    "cough","rash","swelling","inflammation","hypertension","cholesterol",
-    "asthma","arthritis","depression","anxiety","mental","health","medical",
-    "clinical","patient","nursing","pharmacy","antibiotic","vitamin","hormone",
-    "what is","how to treat","causes of","signs of","symptoms of","cure for",
+    "brain","stomach","headache","headace","head","ache","nausea","vomiting",
+    "diarrhea","fatigue","cough","rash","swelling","inflammation","hypertension",
+    "cholesterol","asthma","arthritis","depression","anxiety","mental","health",
+    "medical","clinical","patient","nursing","pharmacy","antibiotic","vitamin",
+    "hormone","what is","how to treat","causes of","signs of","symptoms of",
+    "cure for","tell me about","explain","define","describe","acromegaly",
+    "migraine","appendicitis","ibuprofen","paracetamol","aspirin","insulin",
+    "blood pressure","heart rate","pulse","temperature","weight","diet",
+    "nutrition","exercise","sleep","stress","immune","autoimmune","genetic",
 }
 
 def is_medical_query(text: str) -> bool:

@@ -5,104 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MediBot — AI Medical Assistant</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
 
-  <!-- Background gradient (matches QuantumLogic) -->
+  <!-- Background -->
   <div class="bg-layer" aria-hidden="true">
-    <div class="bg-blob-top"></div>
-    <div class="bg-blob-mid"></div>
+    <div class="bg-blob-1"></div>
+    <div class="bg-blob-2"></div>
+    <div class="bg-blob-3"></div>
   </div>
 
   <!-- Navbar -->
   <header class="navbar">
     <div class="navbar-inner">
-      <span class="brand">MediBot</span>
-      <div class="nav-center">
-        <span class="nav-pill active">Medical AI Chat</span>
+      <div class="brand">
+        <div class="brand-icon">🧠</div>
+        <span class="brand-name">MediBot</span>
+        <span class="brand-badge">AI</span>
       </div>
-      <div class="nav-right">
-        <span class="badge-pill">🩺 Medical AI</span>
+      <div class="nav-status">
+        <span class="status-dot-green"></span>
+        <span class="nav-status-text">RAG · GPT-4o mini · Pinecone</span>
       </div>
+      <div class="nav-right-label">🩺 Medical AI</div>
     </div>
   </header>
 
-  <!-- Disclaimer banner -->
+  <!-- Disclaimer -->
   <div class="disclaimer">
-    ⚠️ This chatbot provides general health information only. It is <strong>NOT a substitute for professional medical advice</strong>. Always consult a qualified healthcare provider.
+    ⚠️ For informational purposes only — <strong>NOT a substitute for professional medical advice.</strong> Always consult a qualified healthcare provider.
   </div>
 
-  <!-- Main layout -->
+  <!-- Layout -->
   <main class="main-layout">
 
-    <!-- Left sidebar -->
-    <aside class="sidebar glass">
-      <div class="sidebar-header">
-        <div class="bot-avatar">🧠</div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+      <div class="sidebar-identity">
+        <div class="sidebar-avatar">🧠</div>
         <div>
-          <p class="sidebar-title">MediBot</p>
-          <p class="sidebar-sub">AI Medical Assistant</p>
+          <p class="sidebar-name">MediBot</p>
+          <p class="sidebar-desc">AI Medical Assistant</p>
         </div>
       </div>
-      <div class="sidebar-divider"></div>
-      <p class="sidebar-label">KNOWLEDGE BASE</p>
-      <div class="kb-item">
-        <span class="kb-icon">📚</span>
-        <span class="kb-text">Gale Encyclopedia of Medicine</span>
-      </div>
-      <div class="sidebar-divider"></div>
-      <p class="sidebar-label">TRY ASKING</p>
-      <div class="suggestion" onclick="fillSuggestion(this)">What is Acromegaly?</div>
-      <div class="suggestion" onclick="fillSuggestion(this)">Symptoms of diabetes?</div>
-      <div class="suggestion" onclick="fillSuggestion(this)">What causes migraines?</div>
-      <div class="suggestion" onclick="fillSuggestion(this)">How is hypertension treated?</div>
-      <div class="sidebar-divider"></div>
-      <p class="sidebar-label">POWERED BY</p>
-      <div class="tech-row"><span class="tech-tag">GPT-4o mini</span><span class="tech-tag">Pinecone</span></div>
-      <div class="tech-row"><span class="tech-tag">LangChain RAG</span><span class="tech-tag">HuggingFace</span></div>
-    </aside>
 
-    <!-- Chat panel -->
-    <section class="chat-panel glass">
+      <div class="divider"></div>
 
-      <!-- Chat header -->
-      <div class="chat-header">
-        <div class="chat-header-left">
-          <div class="status-dot"></div>
+      <div class="sidebar-section">
+        <p class="section-label">📚 Knowledge Base</p>
+        <div class="kb-card">
+          <div class="kb-icon-box">📖</div>
           <div>
-            <p class="chat-title">Medical Assistant</p>
-            <p class="chat-sub">Ask me anything about health & medicine</p>
+            <p class="kb-title">Gale Encyclopedia</p>
+            <p class="kb-sub">2,000+ pages · Medical reference</p>
           </div>
         </div>
-        <button class="btn-glass" onclick="clearChat()">Clear chat</button>
       </div>
 
-      <!-- Messages -->
+      <div class="divider"></div>
+
+      <div class="sidebar-section" style="flex:1">
+        <p class="section-label">💬 Try Asking</p>
+        <div class="suggestions">
+          <div class="chip" onclick="fillSuggestion('What is Acromegaly?')">🩺 What is Acromegaly?</div>
+          <div class="chip" onclick="fillSuggestion('Symptoms of diabetes?')">🩸 Symptoms of diabetes?</div>
+          <div class="chip" onclick="fillSuggestion('What causes migraines?')">🧠 What causes migraines?</div>
+          <div class="chip" onclick="fillSuggestion('How is hypertension treated?')">❤️ How is hypertension treated?</div>
+          <div class="chip" onclick="fillSuggestion('What is appendicitis?')">🦠 What is appendicitis?</div>
+          <div class="chip" onclick="fillSuggestion('Side effects of ibuprofen?')">💊 Side effects of ibuprofen?</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="sidebar-section">
+        <p class="section-label">⚡ Powered By</p>
+        <div class="tech-tags">
+          <span class="tech-tag purple">GPT-4o mini</span>
+          <span class="tech-tag green">Pinecone</span>
+          <span class="tech-tag amber">LangChain</span>
+          <span class="tech-tag red">RAG</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Chat -->
+    <section class="chat-panel">
+
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <span class="status-dot-green"></span>
+          <div>
+            <p class="chat-title">Medical Assistant</p>
+            <p class="chat-sub" id="chat-sub">Ask me anything about health & medicine</p>
+          </div>
+        </div>
+        <button class="btn-ghost" onclick="clearChat()">🗑 Clear</button>
+      </div>
+
       <div class="messages" id="messages">
         <div class="msg bot-msg">
-          <div class="msg-avatar">🧠</div>
-          <div class="msg-bubble bot-bubble">
-            <p>Hello! I'm MediBot, your AI medical information assistant. I can answer questions about symptoms, conditions, treatments, and more — sourced from the Gale Encyclopedia of Medicine.</p>
-            <p class="msg-disclaimer">⚠️ For informational purposes only. Always consult a doctor.</p>
+          <div class="avatar bot-av">🧠</div>
+          <div class="bubble bot-bubble">
+            <div class="answer-body">
+              <p>Hello! I'm <strong>MediBot</strong>, your AI medical information assistant. Ask me about symptoms, conditions, treatments, or medications — sourced from the Gale Encyclopedia of Medicine.</p>
+            </div>
             <span class="msg-time" id="welcome-time"></span>
           </div>
         </div>
       </div>
 
-      <!-- Input area -->
       <div class="input-area">
         <form id="chat-form" class="input-form">
-          <input
-            type="text"
-            id="msg-input"
-            placeholder="Ask a medical question..."
-            autocomplete="off"
-            required
-          />
-          <button type="submit" class="btn-glass-dark send-btn" id="send-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <div class="input-wrap">
+            <input type="text" id="msg-input" placeholder="Ask a medical question..." autocomplete="off" maxlength="500" />
+            <span class="char-count" id="char-count"></span>
+          </div>
+          <button type="submit" class="send-btn" id="send-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </form>
       </div>
@@ -111,7 +135,7 @@
   </main>
 
   <script>
-    // Set welcome time
+    let questionCount = 0;
     document.getElementById('welcome-time').textContent = getTime();
 
     function getTime() {
@@ -119,21 +143,78 @@
       return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
     }
 
-    function fillSuggestion(el) {
-      document.getElementById('msg-input').value = el.textContent;
+    function fillSuggestion(text) {
+      document.getElementById('msg-input').value = text;
       document.getElementById('msg-input').focus();
+      updateCharCount(text);
     }
 
+    function updateCharCount(val) {
+      const el = document.getElementById('char-count');
+      if (val.length > 400) {
+        el.textContent = val.length + '/500';
+        el.style.color = val.length >= 500 ? '#ef4444' : '#94a3b8';
+      } else {
+        el.textContent = '';
+      }
+    }
+
+    document.getElementById('msg-input').addEventListener('input', function() {
+      updateCharCount(this.value);
+    });
+
     function clearChat() {
+      questionCount = 0;
+      document.getElementById('chat-sub').textContent = 'Ask me anything about health & medicine';
       const msgs = document.getElementById('messages');
       msgs.innerHTML = `
         <div class="msg bot-msg">
-          <div class="msg-avatar">🧠</div>
-          <div class="msg-bubble bot-bubble">
-            <p>Chat cleared. Ask me anything about health & medicine!</p>
+          <div class="avatar bot-av">🧠</div>
+          <div class="bubble bot-bubble">
+            <div class="answer-body"><p>Chat cleared. Ask me anything about health & medicine!</p></div>
             <span class="msg-time">${getTime()}</span>
           </div>
         </div>`;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // Render **bold**, bullet lines, numbered lines, disclaimer, headings
+    function renderAnswer(raw) {
+      function inlineBold(text) {
+        return escapeHtml(text).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      }
+
+      const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+      let html = '';
+      let inList = false;
+
+      lines.forEach(line => {
+        const isBullet   = /^[-•*]\s+/.test(line);
+        const isNumbered = /^\d+\.\s+/.test(line);
+        const isHeading  = !isBullet && !isNumbered && line.endsWith(':') && line.length < 80;
+        const isDisclaimer = line.startsWith('⚠️');
+
+        if (isBullet || isNumbered) {
+          if (!inList) { html += '<ul class="answer-list">'; inList = true; }
+          const content = line.replace(/^[-•*]\s+/, '').replace(/^\d+\.\s+/, '');
+          html += `<li>${inlineBold(content)}</li>`;
+        } else {
+          if (inList) { html += '</ul>'; inList = false; }
+          if (isDisclaimer) {
+            html += `<p class="disclaimer-line">${escapeHtml(line)}</p>`;
+          } else if (isHeading) {
+            html += `<p class="answer-heading">${inlineBold(line)}</p>`;
+          } else {
+            html += `<p>${inlineBold(line)}</p>`;
+          }
+        }
+      });
+
+      if (inList) html += '</ul>';
+      return html;
     }
 
     function appendUserMsg(text, time) {
@@ -141,57 +222,77 @@
       const div = document.createElement('div');
       div.className = 'msg user-msg';
       div.innerHTML = `
-        <div class="msg-bubble user-bubble">
+        <div class="bubble user-bubble">
           ${escapeHtml(text)}
           <span class="msg-time">${time}</span>
         </div>
-        <div class="msg-avatar user-avatar">You</div>`;
+        <div class="avatar user-av">You</div>`;
       msgs.appendChild(div);
       msgs.scrollTop = msgs.scrollHeight;
     }
 
-    function formatAnswer(answer) {
-      const paragraphs = answer
-        .trim()
-        .split(/\n{2,}|\n?-\s+|\r\n{2,}/g)
-        .map(segment => segment.trim())
-        .filter(Boolean);
-
-      return paragraphs.map(text => {
-        if (text.match(/^\d+\.|^•|^-\s+/)) {
-          return `<li>${escapeHtml(text.replace(/^\d+\.|^•|^-\s+/, '').trim())}</li>`;
-        }
-        return `<p>${escapeHtml(text)}</p>`;
-      }).join('');
-    }
-
-    function appendBotMsg(answer, sources, time) {
+    function appendBotMsg(answer, sources, time, msgId) {
       const msgs = document.getElementById('messages');
+
       const sourcesHtml = sources && sources.length
-        ? `<div class="sources-block">📄 <strong>Sources:</strong> ${sources.map(s => `<span class="source-tag">${s}</span>`).join('')}</div>`
+        ? `<div class="sources-row">
+            <span class="sources-label">📄 Sources</span>
+            ${sources.map(s => `<span class="source-chip">${escapeHtml(s)}</span>`).join('')}
+           </div>`
         : '';
-      const formattedAnswer = formatAnswer(answer);
+
       const div = document.createElement('div');
       div.className = 'msg bot-msg';
       div.innerHTML = `
-        <div class="msg-avatar">🧠</div>
-        <div class="msg-bubble bot-bubble">
-          <div class="answer-content">${formattedAnswer}</div>
+        <div class="avatar bot-av">🧠</div>
+        <div class="bubble bot-bubble" id="bubble-${msgId}">
+          <div class="answer-body">${renderAnswer(answer)}</div>
           ${sourcesHtml}
-          <span class="msg-time">${time}</span>
+          <div class="bubble-footer">
+            <span class="msg-time">${time}</span>
+            <div class="bubble-actions">
+              <button class="action-btn" onclick="copyAnswer('${msgId}')" title="Copy">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="action-btn feedback-btn" onclick="sendFeedback(this,'up','${msgId}')" title="Helpful">👍</button>
+              <button class="action-btn feedback-btn" onclick="sendFeedback(this,'down','${msgId}')" title="Not helpful">👎</button>
+            </div>
+          </div>
         </div>`;
       msgs.appendChild(div);
       msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function copyAnswer(msgId) {
+      const bubble = document.getElementById('bubble-' + msgId);
+      const text = bubble.querySelector('.answer-body').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = bubble.querySelector('.action-btn');
+        btn.textContent = '✓';
+        setTimeout(() => {
+          btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+        }, 1500);
+      });
+    }
+
+    function sendFeedback(btn, rating, msgId) {
+      btn.style.opacity = '1';
+      btn.style.background = rating === 'up' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)';
+      fetch('/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating, msgId })
+      }).catch(() => {});
     }
 
     function appendTyping() {
       const msgs = document.getElementById('messages');
       const div = document.createElement('div');
       div.className = 'msg bot-msg';
-      div.id = 'typing-indicator';
+      div.id = 'typing';
       div.innerHTML = `
-        <div class="msg-avatar">🧠</div>
-        <div class="msg-bubble bot-bubble typing-bubble">
+        <div class="avatar bot-av">🧠</div>
+        <div class="bubble bot-bubble typing-bubble">
           <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         </div>`;
       msgs.appendChild(div);
@@ -199,12 +300,8 @@
     }
 
     function removeTyping() {
-      const t = document.getElementById('typing-indicator');
+      const t = document.getElementById('typing');
       if (t) t.remove();
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
     document.getElementById('chat-form').addEventListener('submit', function(e) {
@@ -214,9 +311,13 @@
       if (!text) return;
 
       const time = getTime();
+      const msgId = Date.now().toString(36);
       input.value = '';
-      const sendBtn = document.getElementById('send-btn');
-      sendBtn.disabled = true;
+      updateCharCount('');
+      document.getElementById('send-btn').disabled = true;
+
+      questionCount++;
+      document.getElementById('chat-sub').textContent = questionCount + ' question' + (questionCount > 1 ? 's' : '') + ' asked';
 
       appendUserMsg(text, time);
       appendTyping();
@@ -229,13 +330,17 @@
       .then(r => r.json())
       .then(data => {
         removeTyping();
-        appendBotMsg(data.answer, data.sources, getTime());
+        if (data.error) {
+          appendBotMsg(data.error, [], getTime(), msgId);
+        } else {
+          appendBotMsg(data.answer, data.sources, getTime(), msgId);
+        }
       })
       .catch(() => {
         removeTyping();
-        appendBotMsg('Sorry, something went wrong. Please try again.', [], getTime());
+        appendBotMsg('Sorry, something went wrong. Please try again.', [], getTime(), msgId);
       })
-      .finally(() => { sendBtn.disabled = false; });
+      .finally(() => { document.getElementById('send-btn').disabled = false; });
     });
   </script>
 </body>
