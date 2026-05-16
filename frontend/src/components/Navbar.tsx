@@ -2,7 +2,7 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-6 pt-3">
       <div className="max-w-6xl mx-auto glass-navbar rounded-full px-7 py-3.5 flex items-center shadow-sm">
-        <span className="text-[15px] font-bold text-slate-900 tracking-tight">QuantumLogic Labs</span>
+        <span className="text-[15px] font-bold text-slate-900 tracking-tight">🧠 MediBot</span>
         <nav className="absolute left-1/2 -translate-x-1/2">
           <span className="px-4 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase text-slate-900 bg-slate-900/8">
             MediBot
